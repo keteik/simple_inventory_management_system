@@ -1,4 +1,3 @@
-
 // Create Product Command
 export class CreateProductCommand {
   constructor(
@@ -10,7 +9,7 @@ export class CreateProductCommand {
 }
 
 // Update Product Stock Command
-export class UpdateProductStockCommand{
+export class UpdateProductStockCommand {
   constructor(
     public readonly id: string,
     public readonly data: {

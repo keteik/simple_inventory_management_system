@@ -1,4 +1,4 @@
-import { checkSchema } from "express-validator";
+import { checkSchema } from 'express-validator';
 
 export const createProductValidator = checkSchema({
   name: {
@@ -29,48 +29,52 @@ export const createProductValidator = checkSchema({
   },
   price: {
     in: 'body',
+    toFloat: true,
     notEmpty: {
-      errorMessage: 'Name is required',
+      errorMessage: 'Price is required',
     },
     isFloat: {
-      options: { min: 0, },
+      options: { gt: 0 },
       errorMessage: 'Price must be a number greater than or equal to 0',
     },
   },
   stock: {
     in: 'body',
+    toInt: true,
     notEmpty: {
       errorMessage: 'Stock is required',
     },
     isInt: {
-      options: { min: 0 },
-      errorMessage: 'Stock must be an integer greater than or equal to 0',
+      options: { min: 1 },
+      errorMessage: 'Stock must be an integer greater than or equal to 1',
     },
   },
-})
+});
 
 export const createProductRestocksValidator = checkSchema({
-  amount: {
+  stock: {
     in: 'body',
+    toInt: true,
     notEmpty: {
-      errorMessage: 'Amount is required',
+      errorMessage: 'Stock is required',
     },
     isInt: {
       options: { min: 1 },
-      errorMessage: 'Amount must be an integer greater than 0',
+      errorMessage: 'Stock must be an integer greater than 0',
     },
   },
 });
 
 export const createProductSalesValidator = checkSchema({
-  amount: {
+  stock: {
     in: 'body',
+    toInt: true,
     notEmpty: {
-      errorMessage: 'Amount is required',
+      errorMessage: 'Stock is required',
     },
     isInt: {
       options: { min: 1 },
-      errorMessage: 'Amount must be an integer greater than 0',
+      errorMessage: 'Stock must be an integer greater than 0',
     },
   },
 });

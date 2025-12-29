@@ -1,29 +1,26 @@
 import { Request, Response, NextFunction } from 'express';
-import { validationResult } from 'express-validator';
-
-export interface ApiError extends Error {
-  statusCode?: number;
-}
+import { HttpException } from '../common/exceptions/Http.exception';
 
 export const errorHandler = (
-  err: ApiError,
+  err: unknown,
   req: Request,
   res: Response,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _next: NextFunction
 ) => {
-  const result = validationResult(req);
-  const statusCode = result.isEmpty() ? 500 : 400;
-  const error = result.isEmpty() ? (err.message || 'Internal Server Error') : result.array();
+  const isHttpException = err instanceof HttpException;
+
+  const statusCode = isHttpException ? err.statusCode : 500;
+  const errorMessage = isHttpException ? err.message : 'Internal Server Error';
 
   console.error('Error:', {
-    message: err.message,
-    stack: err.stack,
+    message: errorMessage,
+    stack: err instanceof Error ? err.stack : undefined,
     url: req.url,
     method: req.method,
   });
 
   res.status(statusCode).json({
-    error,
+    error: errorMessage,
   });
 };

@@ -1,4 +1,3 @@
-
 // Create Customer Command
 export class CreateCustomerCommand {
   constructor(
