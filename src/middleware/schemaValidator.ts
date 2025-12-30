@@ -1,6 +1,6 @@
 import { validationResult } from 'express-validator';
 import { NextFunction, Request, Response } from 'express';
-import { BadRequestException } from '../common/exceptions/BadRequest.exception';
+import { BadRequestException } from '../exceptions/BadRequestException';
 
 export const validateSchema = (req: Request, _res: Response, next: NextFunction) => {
   const result = validationResult(req);

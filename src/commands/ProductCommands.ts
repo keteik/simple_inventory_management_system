@@ -8,12 +8,22 @@ export class CreateProductCommand {
   ) {}
 }
 
-// Update Product Stock Command
-export class UpdateProductStockCommand {
+// Restock Product Command
+export class RestockProductCommand {
   constructor(
     public readonly id: string,
     public readonly data: {
-      stock: number;
+      stockToIncreaseBy: number;
+    }
+  ) {}
+}
+
+// Sell Product Command
+export class SellProductCommand {
+  constructor(
+    public readonly id: string,
+    public readonly data: {
+      stockToDecreaseBy: number;
     }
   ) {}
 }

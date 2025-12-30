@@ -1,17 +1,20 @@
-import { CreateProductCommand, UpdateProductStockCommand } from '../commands/ProductCommands';
-import { NotFoundException } from '../common/exceptions/NotFound.exception';
-import { ICommandHandler } from '../common/interfaces/CommandHandlerInterface';
-import { IProduct, Product } from '../models/Product';
-
-type CreateProductResultT = Pick<IProduct, 'id' | 'name' | 'description' | 'price' | 'stock'>;
-type UpdateProductStockResultT = Pick<IProduct, 'id' | 'stock'>;
+import {
+  CreateProductCommand,
+  RestockProductCommand,
+  SellProductCommand,
+} from '../commands/ProductCommands';
+import { ProductDto } from '../dto/ProductDto';
+import { BadRequestException } from '../exceptions/BadRequestException';
+import { NotFoundException } from '../exceptions/NotFoundException';
+import { ICommandHandler } from '../interfaces/CommandHandlerInterface';
+import { Product } from '../models/Product';
 
 // Command Handler for Create Product
 export class CreateProductCommandHandler implements ICommandHandler<
   CreateProductCommand,
-  CreateProductResultT
+  ProductDto
 > {
-  async handle(command: CreateProductCommand): Promise<CreateProductResultT> {
+  async handle(command: CreateProductCommand): Promise<ProductDto> {
     // Create new product
     const product = new Product({
       name: command.name,
@@ -22,26 +25,19 @@ export class CreateProductCommandHandler implements ICommandHandler<
 
     await product.save();
 
-    return {
-      id: product._id,
-      name: product.name,
-      description: product.description,
-      price: product.price,
-      stock: product.stock,
-    };
+    return new ProductDto(product);
   }
 }
 
-export class UpdateProductStockCommandHandler implements ICommandHandler<
-  UpdateProductStockCommand,
-  UpdateProductStockResultT
+export class RestockProductCommandHandler implements ICommandHandler<
+  RestockProductCommand,
+  ProductDto
 > {
-  async handle(command: UpdateProductStockCommand): Promise<UpdateProductStockResultT> {
-    // Update product stock
-
+  async handle(command: RestockProductCommand): Promise<ProductDto> {
+    // Increase product stock
     const product = await Product.findByIdAndUpdate(
       command.id,
-      { $inc: { stock: command.data.stock } },
+      { $inc: { stock: command.data.stockToIncreaseBy } },
       { new: true, runValidators: true }
     );
 
@@ -49,9 +45,25 @@ export class UpdateProductStockCommandHandler implements ICommandHandler<
       throw new NotFoundException('Product not found');
     }
 
-    return {
-      id: product._id,
-      stock: product.stock,
-    };
+    return new ProductDto(product);
+  }
+}
+
+export class SellProductCommandHandler implements ICommandHandler<SellProductCommand, ProductDto> {
+  async handle(command: SellProductCommand): Promise<ProductDto> {
+    // Decrease product stock
+    const product = await Product.findOneAndUpdate(
+      { _id: command.id, stock: { $gte: command.data.stockToDecreaseBy } },
+      { $inc: { stock: -command.data.stockToDecreaseBy } },
+      { runValidators: true, new: true }
+    );
+
+    if (!product) {
+      throw new BadRequestException(
+        'Insufficient quantity: cannot decrease by ' + command.data.stockToDecreaseBy
+      );
+    }
+
+    return new ProductDto(product);
   }
 }

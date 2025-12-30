@@ -1,34 +1,35 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import {
   createProductRestocksValidator,
+  createProductSalesValidator,
   createProductValidator,
 } from '../validators/productValidator';
-import { CreateProductCommand, UpdateProductStockCommand } from '../commands/ProductCommands';
+import {
+  CreateProductCommand,
+  RestockProductCommand,
+  SellProductCommand,
+} from '../commands/ProductCommands';
 import {
   CreateProductCommandHandler,
-  UpdateProductStockCommandHandler,
+  RestockProductCommandHandler,
+  SellProductCommandHandler,
 } from '../handlers/ProductCommandHandler';
 import { GetProductsQueryHandler } from '../handlers/ProductQueryHandler';
 import { GetAllProductsQuery } from '../queries/ProductQueries';
 import { createIdValidator } from '../validators/idValidator';
 import { validateSchema } from '../middleware/schemaValidator';
-
-interface ICreateProductBody {
-  name: string;
-  description: string;
-  price: number;
-  stock: number;
-}
-
-interface IRestockProductBody {
-  stock: number;
-}
+import {
+  ICreateProductBody,
+  IRestockProductBody,
+  ISellProductBody,
+} from '../interfaces/ProductInterface';
 
 const router = Router();
 
 // Command handlers instances
 const createProductHandler = new CreateProductCommandHandler();
-const updateProductStockHandler = new UpdateProductStockCommandHandler();
+const restockProductHandler = new RestockProductCommandHandler();
+const sellProductHandler = new SellProductCommandHandler();
 
 // Query handlers instances
 const getAllProductsHandler = new GetProductsQueryHandler();
@@ -76,12 +77,36 @@ router.patch(
   ) => {
     try {
       const { id } = req.params;
-      const { stock } = req.body;
+      const { stockToIncreaseBy } = req.body;
 
-      const command = new UpdateProductStockCommand(id, { stock });
-      const result = await updateProductStockHandler.handle(command);
+      const command = new RestockProductCommand(id, { stockToIncreaseBy });
+      const result = await restockProductHandler.handle(command);
 
-      res.status(201).json(result);
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.patch(
+  '/:id/sell',
+  createIdValidator,
+  createProductSalesValidator,
+  validateSchema,
+  async (
+    req: Request<{ id: string }, object, ISellProductBody>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { id } = req.params;
+      const { stockToDecreaseBy } = req.body;
+
+      const command = new SellProductCommand(id, { stockToDecreaseBy });
+      const result = await sellProductHandler.handle(command);
+
+      res.json(result);
     } catch (error) {
       next(error);
     }

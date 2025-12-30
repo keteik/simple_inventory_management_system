@@ -1,5 +1,6 @@
-import { PaginatedResponse } from '../common/dto/PaginatedResponse';
-import { IQueryHandler } from '../common/interfaces/QueryHandlerInterface';
+import { PaginatedResponse } from '../dto/PaginatedResponse';
+import { ProductDto } from '../dto/ProductDto';
+import { IQueryHandler } from '../interfaces/QueryHandlerInterface';
 import { IProduct, Product } from '../models/Product';
 import { GetAllProductsQuery } from '../queries/ProductQueries';
 
@@ -19,13 +20,7 @@ export class GetProductsQueryHandler implements IQueryHandler<
     ]);
 
     return new PaginatedResponse(
-      products.map((product) => ({
-        id: product._id,
-        name: product.name,
-        description: product.description,
-        price: product.price,
-        stock: product.stock,
-      })),
+      products.map((product) => new ProductDto(product)),
       productsCount,
       query.page,
       limit

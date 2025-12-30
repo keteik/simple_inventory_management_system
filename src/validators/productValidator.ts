@@ -4,77 +4,77 @@ export const createProductValidator = checkSchema({
   name: {
     in: 'body',
     notEmpty: {
-      errorMessage: 'Name is required',
+      errorMessage: 'Field name is required',
     },
     isString: {
-      errorMessage: 'Name must be a string',
+      errorMessage: 'Field name must be a string',
     },
     isLength: {
       options: { min: 1, max: 50 },
-      errorMessage: 'Name must be between 1 and 50 characters',
+      errorMessage: 'Field name must be between 1 and 50 characters',
     },
   },
   description: {
     in: 'body',
     notEmpty: {
-      errorMessage: 'Name is required',
+      errorMessage: 'Field description is required',
     },
     isString: {
-      errorMessage: 'Description must be a string',
+      errorMessage: 'Field description must be a string',
     },
     isLength: {
       options: { min: 1, max: 50 },
-      errorMessage: 'Description must be between 1 and 50 characters',
+      errorMessage: 'Field description must be between 1 and 50 characters',
     },
   },
   price: {
     in: 'body',
     toFloat: true,
     notEmpty: {
-      errorMessage: 'Price is required',
+      errorMessage: 'Field price is required',
     },
     isFloat: {
       options: { gt: 0 },
-      errorMessage: 'Price must be a number greater than or equal to 0',
+      errorMessage: 'Field price must be a number greater than 0',
     },
   },
   stock: {
     in: 'body',
     toInt: true,
     notEmpty: {
-      errorMessage: 'Stock is required',
+      errorMessage: 'Field stock is required',
     },
     isInt: {
       options: { min: 1 },
-      errorMessage: 'Stock must be an integer greater than or equal to 1',
+      errorMessage: 'Field stock must be an integer greater than or equal to 1',
     },
   },
 });
 
 export const createProductRestocksValidator = checkSchema({
-  stock: {
+  stockToIncreaseBy: {
     in: 'body',
     toInt: true,
     notEmpty: {
-      errorMessage: 'Stock is required',
+      errorMessage: 'Field stockToIncreaseBy is required',
     },
     isInt: {
       options: { min: 1 },
-      errorMessage: 'Stock must be an integer greater than 0',
+      errorMessage: 'Field stockToIncreaseBy must be an integer greater than or equal to 1',
     },
   },
 });
 
 export const createProductSalesValidator = checkSchema({
-  stock: {
+  stockToDecreaseBy: {
     in: 'body',
     toInt: true,
     notEmpty: {
-      errorMessage: 'Stock is required',
+      errorMessage: 'Field stockToDecreaseBy is required',
     },
     isInt: {
       options: { min: 1 },
-      errorMessage: 'Stock must be an integer greater than 0',
+      errorMessage: 'Field stockToDecreaseBy must be an integer greater than or equal to 1',
     },
   },
 });
