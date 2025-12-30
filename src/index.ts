@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import { connectDatabase } from './config/database';
 import { errorHandler } from './middleware/errorHandler';
 import productRoutes from './routes/productRoutes';
+import loadData from './config/seed';
 
 dotenv.config();
 
@@ -28,6 +29,10 @@ app.use(errorHandler);
 const startServer = async () => {
   try {
     await connectDatabase();
+
+    // Load seed data
+    await loadData();
+
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
       console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);

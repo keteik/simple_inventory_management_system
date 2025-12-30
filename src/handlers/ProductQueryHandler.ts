@@ -1,16 +1,14 @@
 import { PaginatedResponse } from '../dto/PaginatedResponse';
 import { ProductDto } from '../dto/ProductDto';
 import { IQueryHandler } from '../interfaces/QueryHandlerInterface';
-import { IProduct, Product } from '../models/Product';
+import { Product } from '../models/Product';
 import { GetAllProductsQuery } from '../queries/ProductQueries';
-
-type GetProductsResultT = Pick<IProduct, 'id' | 'name' | 'description' | 'price' | 'stock'>;
 
 export class GetProductsQueryHandler implements IQueryHandler<
   GetAllProductsQuery,
-  PaginatedResponse<GetProductsResultT>
+  PaginatedResponse<ProductDto>
 > {
-  async handle(query: GetAllProductsQuery): Promise<PaginatedResponse<GetProductsResultT>> {
+  async handle(query: GetAllProductsQuery): Promise<PaginatedResponse<ProductDto>> {
     const limit = query.limit;
     const skip = (query.page - 1) * limit;
 

@@ -1,19 +1,11 @@
-import mongoose, { Schema, Document } from 'mongoose';
-
-export interface ICustomer extends Document {
-  email: string;
-  name: string;
-  createdAt: Date;
-  updatedAt: Date;
-  location: string;
-}
+import mongoose, { Schema } from 'mongoose';
+import { ICustomer } from '../interfaces/CustomerInterface';
 
 const CustomerSchema: Schema = new Schema<ICustomer>(
   {
     email: {
       type: String,
       required: true,
-      unique: true,
       lowercase: true,
       trim: true,
       maxLength: 255,
@@ -24,7 +16,7 @@ const CustomerSchema: Schema = new Schema<ICustomer>(
       trim: true,
       maxLength: 100,
     },
-    location: {
+    locationCode: {
       type: String,
       required: true,
       trim: true,

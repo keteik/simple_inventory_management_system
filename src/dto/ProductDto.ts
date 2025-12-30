@@ -1,4 +1,4 @@
-import { IProduct } from '../models/Product';
+import { IProduct } from '../interfaces/ProductInterface';
 
 export class ProductDto {
   id: string;
