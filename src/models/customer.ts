@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import { ICustomer } from '../interfaces/customerInterface';
+import { ICustomer, LocationCode } from '../interfaces/customerInterface';
 
 const CustomerSchema: Schema = new Schema<ICustomer>(
   {
@@ -21,6 +21,7 @@ const CustomerSchema: Schema = new Schema<ICustomer>(
       required: true,
       trim: true,
       maxLength: 20,
+      enum: LocationCode,
     },
   },
   {

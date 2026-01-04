@@ -1,4 +1,5 @@
 import { checkSchema } from 'express-validator';
+import { ProductCategory } from '../interfaces/productInterface';
 
 export const createProductValidator = checkSchema({
   name: {
@@ -47,6 +48,16 @@ export const createProductValidator = checkSchema({
     isInt: {
       options: { min: 1 },
       errorMessage: 'Field stock must be an integer greater than or equal to 1',
+    },
+  },
+  category: {
+    in: 'body',
+    notEmpty: {
+      errorMessage: 'Field category is required',
+    },
+    isIn: {
+      options: [Object.values(ProductCategory)],
+      errorMessage: 'Field category must be one of ELECTRONICS, BOOKS, CLOTHING, HOME, TOYS',
     },
   },
 });

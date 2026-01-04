@@ -21,6 +21,7 @@ export class CreateProductCommandHandler implements ICommandHandler<
       description: command.description,
       price: command.price,
       stock: command.stock,
+      category: command.category,
     });
 
     await product.save();

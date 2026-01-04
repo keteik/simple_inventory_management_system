@@ -7,17 +7,17 @@ const loadCustomersSeedData = async () => {
     {
       email: 'jan.kowalski@example.com',
       name: 'Jan Kowalski',
-      locationCode: 'EU',
+      locationCode: LocationCode.EU,
     },
     {
       email: 'adam.nowak@example.com',
       name: 'Adam Nowak',
-      locationCode: 'ASIA',
+      locationCode: LocationCode.ASIA,
     },
     {
       email: 'anna.wisniewska@example.com',
       name: 'Anna Wisniewska',
-      locationCode: 'US',
+      locationCode: LocationCode.US,
     },
   ];
 

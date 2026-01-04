@@ -1,4 +1,4 @@
-import { IProduct } from '../interfaces/productInterface';
+import { IProduct, ProductCategory } from '../interfaces/productInterface';
 
 export class ProductDto {
   id: string;
@@ -6,6 +6,7 @@ export class ProductDto {
   description: string;
   price: number;
   stock: number;
+  category: ProductCategory;
 
   constructor(product: IProduct) {
     this.id = product._id.toString();
@@ -13,5 +14,6 @@ export class ProductDto {
     this.description = product.description;
     this.price = product.price;
     this.stock = product.stock;
+    this.category = product.category;
   }
 }

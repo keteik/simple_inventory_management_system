@@ -40,8 +40,8 @@ router.post(
   validateSchema,
   async (req: Request<object, object, ICreateProductBody>, res: Response, next: NextFunction) => {
     try {
-      const { name, description, price, stock } = req.body;
-      const command = new CreateProductCommand(name, description, price, stock);
+      const { name, description, price, stock, category } = req.body;
+      const command = new CreateProductCommand(name, description, price, stock, category);
       const product = await createProductHandler.handle(command);
 
       res.status(201).json(product);

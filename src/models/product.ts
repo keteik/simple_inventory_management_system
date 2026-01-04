@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import { IProduct } from '../interfaces/productInterface';
+import { IProduct, ProductCategory } from '../interfaces/productInterface';
 
 const productSchema = new Schema<IProduct>(
   {
@@ -26,6 +26,11 @@ const productSchema = new Schema<IProduct>(
       required: true,
       min: 0,
       set: (v: number) => Math.floor(v), // Ensure stock is an integer
+    },
+    category: {
+      type: String,
+      enum: ProductCategory,
+      required: true,
     },
   },
   {

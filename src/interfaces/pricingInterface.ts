@@ -1,19 +1,34 @@
 import { LocationCode } from './customerInterface';
+import { ProductCategory } from './productInterface';
 
-interface PricingRule {
+// Base interface for pricing rules
+interface IPricingRule {
   description: string;
   rate: number;
 }
 
-export interface IVolumeDiscountRule extends PricingRule {
+export enum DiscountType {
+  VOLUME = 'volume',
+  BLACK_FRIDAY = 'black_friday',
+  HOLIDAY = 'holiday',
+}
+
+interface IDiscount {
+  type: DiscountType;
+}
+
+// Volume discount rule interface
+export interface IVolumeDiscountRule extends IPricingRule, IDiscount {
   minItems: number;
 }
 
-export interface IDateDiscountRule extends PricingRule {
-  date: string;
+// Date-based discount rule interface
+export interface IDateDiscountRule extends IPricingRule, IDiscount {
+  dates: string[];
+  categories: ProductCategory[];
 }
 
-export interface ILocationPricingRule extends PricingRule {
+// Location-based pricing rule interface
+export interface ILocationPricingRule extends IPricingRule {
   location: LocationCode;
-  operation: 'increase' | 'decrease';
 }
