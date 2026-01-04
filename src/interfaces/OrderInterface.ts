@@ -2,7 +2,7 @@ import { Document, Schema } from 'mongoose';
 
 export interface IOrder extends Document {
   customerId: Schema.Types.ObjectId;
-  items: Array<{
+  products: Array<{
     productId: Schema.Types.ObjectId;
     quantity: number;
     priceAtPurchase: number;
@@ -12,7 +12,7 @@ export interface IOrder extends Document {
 
 export interface ICreateOrderBody {
   customerId: string;
-  items: Array<{
+  products: Array<{
     productId: string;
     quantity: number;
   }>;
