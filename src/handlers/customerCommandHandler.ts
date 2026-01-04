@@ -1,6 +1,6 @@
-import { CreateCustomerCommand } from '../commands/CustomerCommands';
-import { ICommandHandler } from '../interfaces/CommandHandlerInterface';
-import { Customer } from '../models/Customer';
+import { CreateCustomerCommand } from '../commands/customerCommands';
+import { ICommandHandler } from '../interfaces/commandHandlerInterface';
+import { Customer } from '../models/customer';
 
 // Command Handler for Create Customer
 export class CreateCustomerCommandHandler implements ICommandHandler<CreateCustomerCommand, void> {

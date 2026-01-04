@@ -1,4 +1,4 @@
-import { LocationCode } from '../interfaces/CustomerInterface';
+import { LocationCode } from '../interfaces/customerInterface';
 
 // Create Customer Command
 export class CreateCustomerCommand {

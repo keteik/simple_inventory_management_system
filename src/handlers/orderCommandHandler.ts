@@ -1,14 +1,14 @@
 import mongoose from 'mongoose';
-import { CreateOrderCommand } from '../commands/OrderCommand';
-import { OrderDto } from '../dto/OrderDto';
-import { ICommandHandler } from '../interfaces/CommandHandlerInterface';
-import { Customer } from '../models/Customer';
-import { NotFoundException } from '../exceptions/NotFoundException';
-import { Product } from '../models/Product';
-import { Order } from '../models/Order';
-import { IOrder } from '../interfaces/OrderInterface';
-import { BadRequestException } from '../exceptions/BadRequestException';
-import { PricingService } from '../services/PricingService';
+import { CreateOrderCommand } from '../commands/orderCommand';
+import { OrderDto } from '../dto/orderDto';
+import { ICommandHandler } from '../interfaces/commandHandlerInterface';
+import { Customer } from '../models/customer';
+import { NotFoundException } from '../exceptions/notFoundException';
+import { Product } from '../models/product';
+import { Order } from '../models/order';
+import { IOrder } from '../interfaces/orderInterface';
+import { BadRequestException } from '../exceptions/badRequestException';
+import { PricingService } from '../services/pricingService';
 
 // Command Handler for Create Order
 export class CreateOrderCommandHandler implements ICommandHandler<CreateOrderCommand, OrderDto> {

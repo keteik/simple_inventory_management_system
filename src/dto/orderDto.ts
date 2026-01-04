@@ -1,4 +1,4 @@
-import { IOrder } from '../interfaces/OrderInterface';
+import { IOrder } from '../interfaces/orderInterface';
 
 export class OrderDto {
   id: string;

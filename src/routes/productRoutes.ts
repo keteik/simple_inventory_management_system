@@ -8,21 +8,21 @@ import {
   CreateProductCommand,
   RestockProductCommand,
   SellProductCommand,
-} from '../commands/ProductCommands';
+} from '../commands/productCommands';
 import {
   CreateProductCommandHandler,
   RestockProductCommandHandler,
   SellProductCommandHandler,
-} from '../handlers/ProductCommandHandler';
-import { GetProductsQueryHandler } from '../handlers/ProductQueryHandler';
-import { GetAllProductsQuery } from '../queries/ProductQueries';
+} from '../handlers/productCommandHandler';
+import { GetProductsQueryHandler } from '../handlers/productQueryHandler';
+import { GetAllProductsQuery } from '../queries/productQueries';
 import { createIdValidator } from '../validators/idValidator';
 import { validateSchema } from '../middleware/schemaValidator';
 import {
   ICreateProductBody,
   IRestockProductBody,
   ISellProductBody,
-} from '../interfaces/ProductInterface';
+} from '../interfaces/productInterface';
 
 const router = Router();
 

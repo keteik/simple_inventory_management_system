@@ -2,12 +2,12 @@ import {
   CreateProductCommand,
   RestockProductCommand,
   SellProductCommand,
-} from '../commands/ProductCommands';
-import { ProductDto } from '../dto/ProductDto';
-import { BadRequestException } from '../exceptions/BadRequestException';
-import { NotFoundException } from '../exceptions/NotFoundException';
-import { ICommandHandler } from '../interfaces/CommandHandlerInterface';
-import { Product } from '../models/Product';
+} from '../commands/productCommands';
+import { ProductDto } from '../dto/productDto';
+import { BadRequestException } from '../exceptions/badRequestException';
+import { NotFoundException } from '../exceptions/notFoundException';
+import { ICommandHandler } from '../interfaces/commandHandlerInterface';
+import { Product } from '../models/product';
 
 // Command Handler for Create Product
 export class CreateProductCommandHandler implements ICommandHandler<

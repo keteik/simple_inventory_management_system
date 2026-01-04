@@ -1,5 +1,5 @@
-import { LocationCode } from '../interfaces/CustomerInterface';
-import { Customer } from '../models/Customer';
+import { LocationCode } from '../interfaces/customerInterface';
+import { Customer } from '../models/customer';
 
 // Seed data for Customers
 const loadCustomersSeedData = async () => {

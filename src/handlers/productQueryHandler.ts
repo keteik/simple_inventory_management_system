@@ -1,8 +1,8 @@
-import { PaginatedResponse } from '../dto/PaginatedResponse';
-import { ProductDto } from '../dto/ProductDto';
-import { IQueryHandler } from '../interfaces/QueryHandlerInterface';
-import { Product } from '../models/Product';
-import { GetAllProductsQuery } from '../queries/ProductQueries';
+import { PaginatedResponse } from '../dto/paginatedResponse';
+import { ProductDto } from '../dto/productDto';
+import { IQueryHandler } from '../interfaces/queryHandlerInterface';
+import { Product } from '../models/product';
+import { GetAllProductsQuery } from '../queries/productQueries';
 
 export class GetProductsQueryHandler implements IQueryHandler<
   GetAllProductsQuery,

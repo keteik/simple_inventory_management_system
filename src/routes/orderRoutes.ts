@@ -1,10 +1,10 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { ICreateOrderBody } from '../interfaces/OrderInterface';
+import { ICreateOrderBody } from '../interfaces/orderInterface';
 import { createOrderValidator } from '../validators/orderValidator';
 import { validateSchema } from '../middleware/schemaValidator';
-import { CreateOrderCommandHandler } from '../handlers/OrderCommandHandler';
-import { CreateOrderCommand } from '../commands/OrderCommand';
-import { PricingService } from '../services/PricingService';
+import { CreateOrderCommandHandler } from '../handlers/orderCommandHandler';
+import { CreateOrderCommand } from '../commands/orderCommand';
+import { PricingService } from '../services/pricingService';
 
 const router = Router();
 

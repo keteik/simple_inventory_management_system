@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import { ICustomer } from '../interfaces/CustomerInterface';
+import { ICustomer } from '../interfaces/customerInterface';
 
 const CustomerSchema: Schema = new Schema<ICustomer>(
   {

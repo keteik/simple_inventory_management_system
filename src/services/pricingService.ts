@@ -1,11 +1,11 @@
-import { ICustomer, LocationCode } from '../interfaces/CustomerInterface';
-import { IOrder } from '../interfaces/OrderInterface';
+import { ICustomer, LocationCode } from '../interfaces/customerInterface';
+import { IOrder } from '../interfaces/orderInterface';
 import Decimal from 'decimal.js';
 import {
   IDateDiscountRule,
   ILocationPricingRule,
   IVolumeDiscountRule,
-} from '../interfaces/PricingInterface';
+} from '../interfaces/pricingInterface';
 
 export class PricingService {
   private readonly VOLUME_DISCOUNTS: IVolumeDiscountRule[] = [

@@ -1,4 +1,4 @@
-import { LocationCode } from './CustomerInterface';
+import { LocationCode } from './customerInterface';
 
 interface PricingRule {
   description: string;
