@@ -8,9 +8,12 @@ import { Product } from '../models/Product';
 import { Order } from '../models/Order';
 import { IOrder } from '../interfaces/OrderInterface';
 import { BadRequestException } from '../exceptions/BadRequestException';
+import { PricingService } from '../services/PricingService';
 
 // Command Handler for Create Order
 export class CreateOrderCommandHandler implements ICommandHandler<CreateOrderCommand, OrderDto> {
+  constructor(private readonly _pricingService: PricingService) {}
+
   async handle(command: CreateOrderCommand): Promise<OrderDto> {
     const session = await mongoose.startSession();
 
@@ -24,7 +27,7 @@ export class CreateOrderCommandHandler implements ICommandHandler<CreateOrderCom
         }
 
         //2. Verify products and calculate total amount, prepare order items, and stock updates
-        let totalAmount = 0;
+        let totalBasePrice = 0;
         const orderItems: IOrder['products'] = [];
         const stockUpdates: Pick<IOrder['products'][0], 'productId' | 'quantity'>[] = [];
 
@@ -45,7 +48,7 @@ export class CreateOrderCommandHandler implements ICommandHandler<CreateOrderCom
 
           const priceAtPurchase = product.price;
           const itemTotalPrice = priceAtPurchase * orderProduct.quantity;
-          totalAmount += itemTotalPrice;
+          totalBasePrice += itemTotalPrice;
 
           // Prepare order item
           orderItems.push({
@@ -79,11 +82,19 @@ export class CreateOrderCommandHandler implements ICommandHandler<CreateOrderCom
           );
         }
 
-        //4. Create Order
+        //4. Calculate final price
+        const finalPrice = this._pricingService.calculateFinalPrice(
+          customer,
+          totalBasePrice,
+          orderItems
+        );
+
+        //5. Create Order
         const order = new Order({
           customerId: command.customerId,
           products: orderItems,
-          totalAmount,
+          basePrice: totalBasePrice,
+          finalPrice: finalPrice,
         });
 
         await order.save({ session });

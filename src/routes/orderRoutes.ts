@@ -4,11 +4,12 @@ import { createOrderValidator } from '../validators/orderValidator';
 import { validateSchema } from '../middleware/schemaValidator';
 import { CreateOrderCommandHandler } from '../handlers/OrderCommandHandler';
 import { CreateOrderCommand } from '../commands/OrderCommand';
+import { PricingService } from '../services/PricingService';
 
 const router = Router();
 
 // Command handler instance
-const createOrderHandler = new CreateOrderCommandHandler();
+const createOrderHandler = new CreateOrderCommandHandler(new PricingService());
 
 router.post(
   '/',

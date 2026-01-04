@@ -7,7 +7,8 @@ export interface IOrder extends Document {
     quantity: number;
     priceAtPurchase: number;
   }>;
-  totalAmount: number;
+  basePrice: number;
+  finalPrice: number;
 }
 
 export interface ICreateOrderBody {

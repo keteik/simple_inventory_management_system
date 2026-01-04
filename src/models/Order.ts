@@ -20,10 +20,17 @@ const OrderSchema = new Schema<IOrder>(
         },
       },
     ],
-    totalAmount: {
+    basePrice: {
       type: Number,
       required: true,
       min: 0,
+      set: (v: number) => parseFloat(v.toFixed(2)),
+    },
+    finalPrice: {
+      type: Number,
+      required: true,
+      min: 0,
+      set: (v: number) => parseFloat(v.toFixed(2)),
     },
   },
   {

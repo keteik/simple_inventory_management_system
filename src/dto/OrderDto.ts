@@ -8,7 +8,8 @@ export class OrderDto {
     quantity: number;
     priceAtPurchase: number;
   }>;
-  totalAmount: number;
+  basePrice: number;
+  finalPrice: number;
 
   constructor(order: IOrder) {
     this.id = order._id.toString();
@@ -18,6 +19,7 @@ export class OrderDto {
       quantity: product.quantity,
       priceAtPurchase: product.priceAtPurchase,
     }));
-    this.totalAmount = order.totalAmount;
+    this.basePrice = order.basePrice;
+    this.finalPrice = order.finalPrice;
   }
 }

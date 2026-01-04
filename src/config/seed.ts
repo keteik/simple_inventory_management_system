@@ -1,8 +1,9 @@
+import { LocationCode } from '../interfaces/CustomerInterface';
 import { Customer } from '../models/Customer';
 
 // Seed data for Customers
 const loadCustomersSeedData = async () => {
-  const customersSeedData = [
+  const customersSeedData: { email: string; name: string; locationCode: LocationCode }[] = [
     {
       email: 'jan.kowalski@example.com',
       name: 'Jan Kowalski',
@@ -11,7 +12,7 @@ const loadCustomersSeedData = async () => {
     {
       email: 'adam.nowak@example.com',
       name: 'Adam Nowak',
-      locationCode: 'AS',
+      locationCode: 'ASIA',
     },
     {
       email: 'anna.wisniewska@example.com',
