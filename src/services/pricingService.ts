@@ -1,12 +1,16 @@
 import { ICustomer, LocationCode } from '../interfaces/customerInterface';
-import Decimal from 'decimal.js';
 import {
   DiscountType,
   IDateDiscountRule,
   ILocationPricingRule,
+  IPriceAppliedDiscount,
   IVolumeDiscountRule,
+  IPriceCalculationInput,
+  IPriceCalculationResult,
+  IOrderProductPrice,
 } from '../interfaces/pricingInterface';
-import { IProduct, ProductCategory } from '../interfaces/productInterface';
+import { ProductCategory } from '../interfaces/productInterface';
+import { add, multiply, subtract } from '../utils/mathUtil';
 
 export class PricingService {
   private readonly LOCATION_TARIFF: ILocationPricingRule[] = [
@@ -75,38 +79,20 @@ export class PricingService {
     },
   ];
 
-  calculateOrderPrice(
-    orderProducts: {
-      quantity: number;
-      product: IProduct;
-    }[],
-    customer: ICustomer
-  ) {
+  /**
+   *  * Calculate the total price for an order considering location-based pricing and applicable discounts
+   *  @param orderProducts - List of products and their quantities in the order
+   * @param customer - Customer placing the order
+   * */
+  calculateOrderPrice(orderProducts: IPriceCalculationInput[], customer: ICustomer) {
     const locationTariff = this.getLocationTariffRate(customer.locationCode);
 
-    const orderPricing: {
-      products: {
-        product: IProduct;
-        quantity: number;
-        unitBasePrice: number;
-        unitFinalPrice: number;
-      }[];
-      pricing: {
-        basePrice: number;
-        locationMultiplier: number;
-        appliedDiscount?: {
-          type: string;
-          rate: number;
-        };
-        discountAmount: number;
-        finalPrice: number;
-      };
-    } = {
+    const orderPricing: IPriceCalculationResult = {
       products: [],
       pricing: {
         basePrice: 0,
         locationMultiplier: locationTariff,
-        appliedDiscount: undefined,
+        appliedDiscount: null,
         discountAmount: 0,
         finalPrice: 0,
       },
@@ -114,83 +100,64 @@ export class PricingService {
 
     // Calculate unit prices and prepare order items
     for (const orderProduct of orderProducts) {
-      const unitBasePrice = new Decimal(orderProduct.product.price)
-        .mul(locationTariff)
-        .toDecimalPlaces(2)
-        .toNumber();
+      const unitBasePrice = multiply(orderProduct.product.price, locationTariff);
 
+      orderPricing.pricing.basePrice = add(
+        orderPricing.pricing.basePrice,
+        multiply(unitBasePrice, orderProduct.quantity)
+      );
       orderPricing.products.push({
         product: orderProduct.product,
         quantity: orderProduct.quantity,
         unitBasePrice,
         unitFinalPrice: unitBasePrice, // If no discounts, final price equals base price
       });
-
-      orderPricing.pricing.basePrice = new Decimal(orderPricing.pricing.basePrice)
-        .plus(unitBasePrice)
-        .toDecimalPlaces(2)
-        .toNumber();
     }
 
     const discount = this.getDiscount(orderPricing.pricing.basePrice, orderPricing.products);
-    if (discount.appliedDiscount) {
-      orderPricing.pricing.appliedDiscount = discount.appliedDiscount;
+    if (discount) {
+      orderPricing.pricing.appliedDiscount = discount;
 
       for (const item of orderPricing.products) {
-        const discountUnitAmount = new Decimal(item.unitBasePrice)
-          .mul(discount.appliedDiscount.rate)
-          .toDecimalPlaces(2)
-          .toNumber();
+        const discountUnitAmount = multiply(item.unitBasePrice, discount.rate);
+        const discountedUnitPrice = subtract(item.unitBasePrice, discountUnitAmount);
 
-        const discountedUnitPrice = new Decimal(item.unitBasePrice)
-          .minus(discountUnitAmount)
-          .toDecimalPlaces(2)
-          .toNumber();
         item.unitFinalPrice = discountedUnitPrice;
-        orderPricing.pricing.discountAmount = new Decimal(orderPricing.pricing.discountAmount)
-          .plus(discountUnitAmount)
-          .toDecimalPlaces(2)
-          .toNumber();
+        orderPricing.pricing.discountAmount = add(
+          orderPricing.pricing.discountAmount,
+          multiply(discountUnitAmount, item.quantity)
+        );
       }
     }
 
-    orderPricing.pricing.finalPrice =
-      orderPricing.pricing.basePrice - orderPricing.pricing.discountAmount;
+    orderPricing.pricing.finalPrice = subtract(
+      orderPricing.pricing.basePrice,
+      orderPricing.pricing.discountAmount
+    );
 
     return orderPricing;
   }
 
+  // Determine the best applicable discount for the order
   private getDiscount(
     basePrice: number,
-    orderProducts: {
-      quantity: number;
-      product: IProduct;
-      unitBasePrice: number;
-    }[]
-  ) {
+    orderProducts: IOrderProductPrice[]
+  ): Omit<IPriceAppliedDiscount, 'discountApplied'> | null {
     // Determine the best applicable discount
     const bestDiscount = this.getBestDiscount(basePrice, orderProducts);
 
-    return {
-      appliedDiscount: bestDiscount
-        ? {
-            rate: bestDiscount.rate,
-            type: bestDiscount.type,
-          }
-        : undefined,
-    };
+    return bestDiscount
+      ? {
+          rate: bestDiscount.rate,
+          type: bestDiscount.type,
+        }
+      : null;
   }
 
-  private getBestDiscount(
-    basePrice: number,
-    orderProducts: {
-      quantity: number;
-      product: IProduct;
-      unitBasePrice: number;
-    }[]
-  ) {
+  // Evaluate both volume and date-based discounts and return the best one
+  private getBestDiscount(basePrice: number, orderProducts: IOrderProductPrice[]) {
     const orderedProductQuantity = orderProducts.reduce((sum, item) => sum + item.quantity, 0);
-    const orderDate = new Date('2025-11-29').toISOString().split('T')[0];
+    const orderDate = new Date().toISOString().split('T')[0];
 
     // Get both discount rates
     const volumeDiscount = this.getVolumeDiscount(basePrice, orderedProductQuantity);
@@ -203,16 +170,17 @@ export class PricingService {
     return bestDiscount;
   }
 
-  private getVolumeDiscount(basePrice: number, orderedProductQuantity: number) {
+  // Get volume discount based on total quantity ordered
+  private getVolumeDiscount(
+    basePrice: number,
+    orderedProductQuantity: number
+  ): IPriceAppliedDiscount | null {
     // Check total items matches any volume discount rules in descending order
     for (const discountRule of this.VOLUME_DISCOUNTS.sort((a, b) => b.minItems - a.minItems)) {
       if (orderedProductQuantity >= discountRule.minItems) {
         return {
           type: discountRule.type,
-          discountApplied: new Decimal(basePrice)
-            .mul(discountRule.rate)
-            .toDecimalPlaces(2)
-            .toNumber(),
+          discountApplied: multiply(basePrice, discountRule.rate),
           rate: discountRule.rate,
         };
       }
@@ -221,15 +189,12 @@ export class PricingService {
     return null;
   }
 
+  // Get date-based discount if the order date matches any discount rules
   private getDateDiscount(
     basePrice: number,
     orderDate: string,
-    orderProducts: {
-      quantity: number;
-      product: IProduct;
-      unitBasePrice: number;
-    }[]
-  ) {
+    orderProducts: IOrderProductPrice[]
+  ): IPriceAppliedDiscount | null {
     // Black Friday has precedence over holiday discounts
     const blackFridayDiscount = this.DATE_DISCOUNTS.find(
       (d) => d.dates.includes(orderDate) && d.type === 'black_friday'
@@ -237,10 +202,7 @@ export class PricingService {
     if (blackFridayDiscount) {
       return {
         type: blackFridayDiscount.type,
-        discountApplied: new Decimal(basePrice)
-          .mul(blackFridayDiscount.rate)
-          .toDecimalPlaces(2)
-          .toNumber(),
+        discountApplied: multiply(basePrice, blackFridayDiscount.rate),
         rate: blackFridayDiscount.rate,
       };
     }
@@ -259,14 +221,8 @@ export class PricingService {
       for (const item of orderProducts) {
         if (holidayDiscount.categories.includes(item.product.category)) {
           // Calculate discount only for eligible categories
-          const holidayDiscountAmount = new Decimal(item.unitBasePrice)
-            .mul(holidayDiscount.rate)
-            .toDecimalPlaces(2)
-            .toNumber();
-          totalHolidayDiscount = new Decimal(totalHolidayDiscount)
-            .plus(holidayDiscountAmount)
-            .toDecimalPlaces(2)
-            .toNumber();
+          const holidayDiscountAmount = multiply(item.unitBasePrice, holidayDiscount.rate);
+          totalHolidayDiscount = add(totalHolidayDiscount, holidayDiscountAmount);
         }
       }
 
@@ -280,6 +236,7 @@ export class PricingService {
     return null;
   }
 
+  // Get location tariff rate based on customer's location
   private getLocationTariffRate(customerLocation: LocationCode) {
     // Check if customer's location has any pricing adjustments
     const locationTariff = this.LOCATION_TARIFF.find((lp) => lp.location === customerLocation);

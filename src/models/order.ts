@@ -45,7 +45,7 @@ const OrderSchema = new Schema<IOrder>(
           type: String,
           enum: DiscountType,
         },
-        percentage: {
+        rate: {
           type: Number,
           min: 0,
           max: 1,
