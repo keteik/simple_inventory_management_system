@@ -34,7 +34,7 @@ const OrderSchema = new Schema<IOrder>(
         min: 0,
         set: (v: number) => parseFloat(v.toFixed(2)),
       },
-      locationMultiplier: {
+      locationTariffRate: {
         type: Number,
         required: true,
         min: 0,

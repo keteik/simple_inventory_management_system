@@ -47,7 +47,7 @@ export interface IPriceCalculationResult {
   }[];
   pricing: {
     basePrice: number;
-    locationMultiplier: number;
+    locationTariffRate: number;
     appliedDiscount?: Omit<IPriceAppliedDiscount, 'discountApplied'> | null;
     discountAmount: number;
     finalPrice: number;

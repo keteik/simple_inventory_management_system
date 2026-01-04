@@ -15,7 +15,7 @@ interface IOrderPricingDiscount {
 
 interface IOrderPricing {
   basePrice: number; // Quantity * unitBasePrice summed for all products
-  locationMultiplier: number; // 0.15 | 0.05 | etc.
+  locationTariffRate: number; // 0.15 | 0.05 | etc.
   appliedDiscount?: IOrderPricingDiscount;
   discountAmount: number;
   finalPrice: number;

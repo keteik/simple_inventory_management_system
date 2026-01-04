@@ -13,7 +13,7 @@ export class OrderDto {
   pricing: {
     basePrice: number;
     finalPrice: number;
-    locationMultiplier: number;
+    locationTariffRate: number;
     appliedDiscount?: {
       type: DiscountType;
       percentage: number;
@@ -33,7 +33,7 @@ export class OrderDto {
     this.pricing = {
       basePrice: order.pricing.basePrice,
       finalPrice: order.pricing.finalPrice,
-      locationMultiplier: order.pricing.locationMultiplier,
+      locationTariffRate: order.pricing.locationTariffRate,
       appliedDiscount: order.pricing.appliedDiscount,
       discountAmount: order.pricing.discountAmount,
     };

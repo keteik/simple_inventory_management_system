@@ -88,7 +88,7 @@ export class CreateOrderCommandHandler implements ICommandHandler<CreateOrderCom
           pricing: {
             basePrice: orderPricing.pricing.basePrice,
             finalPrice: orderPricing.pricing.finalPrice,
-            locationMultiplier: orderPricing.pricing.locationMultiplier,
+            locationTariffRate: orderPricing.pricing.locationTariffRate,
             appliedDiscount: orderPricing.pricing.appliedDiscount,
             discountAmount: orderPricing.pricing.discountAmount,
           },

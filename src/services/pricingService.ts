@@ -85,20 +85,22 @@ export class PricingService {
    * @param customer - Customer placing the order
    * */
   calculateOrderPrice(orderProducts: IPriceCalculationInput[], customer: ICustomer) {
+    // 1. Get location tariff rate
     const locationTariff = this.getLocationTariffRate(customer.locationCode);
 
+    //2 . Initialize pricing result
     const orderPricing: IPriceCalculationResult = {
       products: [],
       pricing: {
         basePrice: 0,
-        locationMultiplier: locationTariff,
+        locationTariffRate: locationTariff,
         appliedDiscount: null,
         discountAmount: 0,
         finalPrice: 0,
       },
     };
 
-    // Calculate unit prices and prepare order items
+    // 3. Calculate unit prices and prepare order items
     for (const orderProduct of orderProducts) {
       const unitBasePrice = multiply(orderProduct.product.price, locationTariff);
 
@@ -114,6 +116,7 @@ export class PricingService {
       });
     }
 
+    // 4 . Determine and apply the best discount
     const discount = this.getDiscount(orderPricing.pricing.basePrice, orderPricing.products);
     if (discount) {
       orderPricing.pricing.appliedDiscount = discount;
@@ -130,6 +133,7 @@ export class PricingService {
       }
     }
 
+    // 5. Calculate final price after discount
     orderPricing.pricing.finalPrice = subtract(
       orderPricing.pricing.basePrice,
       orderPricing.pricing.discountAmount
