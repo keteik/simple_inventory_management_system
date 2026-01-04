@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 export const connectDatabase = async (): Promise<void> => {
   try {
-    const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/cqrs-app';
+    const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/cqrs-app?replicaSet=rs0';
 
     await mongoose.connect(mongoUri);
 

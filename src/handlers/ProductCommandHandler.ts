@@ -52,6 +52,7 @@ export class RestockProductCommandHandler implements ICommandHandler<
 export class SellProductCommandHandler implements ICommandHandler<SellProductCommand, ProductDto> {
   async handle(command: SellProductCommand): Promise<ProductDto> {
     // Decrease product stock
+    // Ensure stock does not go below zero
     const product = await Product.findOneAndUpdate(
       { _id: command.id, stock: { $gte: command.data.stockToDecreaseBy } },
       { $inc: { stock: -command.data.stockToDecreaseBy } },

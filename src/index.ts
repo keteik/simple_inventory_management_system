@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import { connectDatabase } from './config/database';
 import { errorHandler } from './middleware/errorHandler';
 import productRoutes from './routes/productRoutes';
+import orderRoutes from './routes/orderRoutes';
 import loadData from './config/seed';
 
 dotenv.config();
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/products', productRoutes);
+app.use('/orders', orderRoutes);
 
 // Error handling middleware (must be last)
 app.use(errorHandler);
