@@ -1,7 +1,7 @@
 {
   "name": "cqrs-express-mongodb",
   "version": "1.0.0",
-  "description": "Node.js Express MongoDB TypeScript CQRS project template",
+  "description": "Simple Inventory Management System using CQRS pattern with Express and MongoDB",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
