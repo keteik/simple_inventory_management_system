@@ -10,7 +10,7 @@ interface IOrderProduct {
 
 interface IOrderPricingDiscount {
   type: DiscountType;
-  percentage: number; // 0.25 | 0.10 | etc.
+  rate: number; // 0.25 | 0.10 | etc.
 }
 
 interface IOrderPricing {

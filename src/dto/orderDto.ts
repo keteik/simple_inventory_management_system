@@ -16,7 +16,7 @@ export class OrderDto {
     locationTariffRate: number;
     appliedDiscount?: {
       type: DiscountType;
-      percentage: number;
+      rate: number;
     };
     discountAmount: number;
   };

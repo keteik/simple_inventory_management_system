@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { HttpException } from '../exceptions/httpException';
+import { isDev } from '../utils/env.util';
 
 export const errorHandler = (
   err: unknown,
@@ -13,12 +14,14 @@ export const errorHandler = (
   const statusCode = isHttpException ? err.statusCode : 500;
   const errorMessage = isHttpException ? err.message : 'Internal Server Error';
 
-  console.error('Error:', {
-    message: errorMessage,
-    stack: err instanceof Error ? err.stack : undefined,
-    url: req.url,
-    method: req.method,
-  });
+  if (isDev()) {
+    console.error('Error:', {
+      message: errorMessage,
+      stack: err instanceof Error ? err.stack : undefined,
+      url: req.url,
+      method: req.method,
+    });
+  }
 
   res.status(statusCode).json({
     error: errorMessage,

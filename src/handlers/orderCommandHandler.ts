@@ -101,9 +101,6 @@ export class CreateOrderCommandHandler implements ICommandHandler<CreateOrderCom
 
         return new OrderDto(order);
       });
-    } catch (error) {
-      console.error('Transaction failed:', error);
-      throw error;
     } finally {
       session.endSession();
     }
