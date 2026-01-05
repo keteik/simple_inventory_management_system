@@ -37,7 +37,7 @@ A Node.js/Express inventory management system implementing CQRS (Command Query R
 
 ```bash
 git clone <repository-url>
-cd coffie_mug_recruitment_task
+cd cqrs-express-mongodb-app
 ```
 
 ### 2. Install Dependencies
